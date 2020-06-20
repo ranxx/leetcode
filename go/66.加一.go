@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 /*
  * @lc app=leetcode.cn id=66 lang=golang
  *
@@ -41,7 +43,7 @@ package main
 func plusOne(digits []int) []int {
 	plus := false
 	digits[len(digits)-1]++
-	ret := []int
+	// ret := []int{}
 	for i := len(digits) - 1; i >= 0; i-- {
 		if plus {
 			digits[i]++
@@ -58,5 +60,6 @@ func plusOne(digits []int) []int {
 // @lc code=end
 
 func main() {
-
+	fmt.Println(plusOne([]int{1, 2, 3, 9}))
+	fmt.Println(plusOne([]int{9, 9}))
 }
