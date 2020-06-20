@@ -1,1 +1,3 @@
 # leetcode
+
+[**diary**](./DIARY.md)
