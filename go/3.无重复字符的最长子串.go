@@ -43,6 +43,17 @@ import "fmt"
  *
  */
 
+/*
+ * @解题思路
+ * 此题只考虑ASCII码，加上扩展一共为127*2，一般用255长度
+ * 数组bits用-1填充，这样可以减少很多判断
+ * 用begin记录每次处理字符串的开始下表，初始化为0
+ * 循环字符串s，每个字符c的ASCII码值作为数组的下标i
+ * 如果bits[i]>=begin，更新begin：begin=bits[i]+1；并计算此时的max= c在s中的下标 - begin
+ * 更新bits[i] = c在s中的下标
+ * 结束在计算下max
+ */
+
 // @lc code=start
 func lengthOfLongestSubstring(s string) int {
 	bits := make([]int, 255)
@@ -52,15 +63,13 @@ func lengthOfLongestSubstring(s string) int {
 	begin, max := 0, 0
 	for i := range s {
 		index := bits[int(s[i])]
-		if index == -1 || index < begin {
-			bits[int(s[i])] = i
-		} else {
+		if index >= begin {
 			if max < i-begin {
 				max = i - begin
 			}
 			begin = index + 1
-			bits[int(s[i])] = i
 		}
+		bits[int(s[i])] = i
 	}
 	if len(s)-begin > max && len(s) > 0 {
 		return len(s) - begin
@@ -78,4 +87,5 @@ func main() {
 	fmt.Println(lengthOfLongestSubstring(" "))
 	fmt.Println(lengthOfLongestSubstring("au"))
 	fmt.Println(lengthOfLongestSubstring("cdd"))
+	fmt.Println(lengthOfLongestSubstring("abba"))
 }
