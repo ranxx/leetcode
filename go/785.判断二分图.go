@@ -1,0 +1,133 @@
+package main
+
+import (
+	"fmt"
+)
+
+/*
+ * @lc app=leetcode.cn id=785 lang=golang
+ *
+ * [785] 判断二分图
+ *
+ * https://leetcode-cn.com/problems/is-graph-bipartite/description/
+ *
+ * algorithms
+ * Medium (45.24%)
+ * Likes:    132
+ * Dislikes: 0
+ * Total Accepted:    17.9K
+ * Total Submissions: 37.4K
+ * Testcase Example:  '[[1,3],[0,2],[1,3],[0,2]]'
+ *
+ * 给定一个无向图graph，当这个图为二分图时返回true。
+ *
+ * 如果我们能将一个图的节点集合分割成两个独立的子集A和B，并使图中的每一条边的两个节点一个来自A集合，一个来自B集合，我们就将这个图称为二分图。
+ *
+ *
+ * graph将会以邻接表方式给出，graph[i]表示图中与节点i相连的所有节点。每个节点都是一个在0到graph.length-1之间的整数。这图中没有自环和平行边：
+ * graph[i] 中不存在i，并且graph[i]中没有重复的值。
+ *
+ *
+ *
+ * 示例 1:
+ * 输入: [[1,3], [0,2], [1,3], [0,2]]
+ * 输出: true
+ * 解释:
+ * 无向图如下:
+ * 0----1
+ * |    |
+ * |    |
+ * 3----2
+ * 我们可以将节点分成两组: {0, 2} 和 {1, 3}。
+ *
+ *
+ *
+ *
+ * 示例 2:
+ * 输入: [[1,2,3], [0,2], [0,1,3], [0,2]]
+ * 输出: false
+ * 解释:
+ * 无向图如下:
+ * 0----1
+ * | \  |
+ * |  \ |
+ * 3----2
+ * 我们不能将节点分割成两个独立的子集。
+ *
+ *
+ * 注意:
+ *
+ *
+ * graph 的长度范围为 [1, 100]。
+ * graph[i] 中的元素的范围为 [0, graph.length - 1]。
+ * graph[i] 不会包含 i 或者有重复的值。
+ * 图是无向的: 如果j 在 graph[i]里边, 那么 i 也会在 graph[j]里边。
+ *
+ *
+ */
+
+// @lc code=start
+func isBipartite(graph [][]int) bool {
+	// 染色法
+	visit := map[int]bool{0: true}
+	for i, points := range graph {
+		// 拿到i的颜色
+		// if _, ok := visit[i]; !ok {
+		// 	for _, point := range points {
+		// 		if _, ok = visit[point]; ok {
+		// 			visit[i] = !visit[point]
+		// 			break
+		// 		}
+		// 	}
+		// }
+		// if _, ok := visit[i]; !ok {
+		// 	visit[i] = true
+		// }
+		f := map[int]bool{}
+		if ok := found(visit, graph, f, i); !ok {
+			visit[i] = true
+		}
+
+		value := !visit[i]
+		for _, point := range points {
+			v, ok := visit[point]
+			if ok && v != value {
+				// fmt.Printf("%#v\n", visit)
+				return false
+			}
+			visit[point] = value
+		}
+	}
+	return true
+}
+
+func found(visit map[int]bool, graph [][]int, f map[int]bool, i int) bool {
+	if _, ok := visit[i]; ok {
+		return true
+	}
+	if f[i] {
+		return false
+	}
+	f[i] = true
+	for _, point := range graph[i] {
+		ok := found(visit, graph, f, point)
+		if ok {
+			visit[i] = !visit[point]
+			return true
+		}
+	}
+
+	return false
+}
+
+// @lc code=end
+
+func main() {
+	fmt.Println(isBipartite([][]int{{1, 3}, {0, 2}, {1, 3}, {0, 2}}))
+	// {{1,2,3}, {0,2}, {0,1,3}, {0,2}}
+	fmt.Println(isBipartite([][]int{{1, 2, 3}, {0, 2}, {0, 1, 3}, {0, 2}}))
+	//
+	fmt.Println(isBipartite([][]int{{1}, {0, 3}, {3}, {1, 2}}))
+
+	fmt.Println(isBipartite([][]int{{3}, {2, 4}, {1}, {0, 4}, {1, 3}}))
+}
